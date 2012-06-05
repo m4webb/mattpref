@@ -1,115 +1,57 @@
-" An example for a vimrc file.
-"
-" Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2008 Dec 17
-"
-" To use it, copy it to
-"     for Unix and OS/2:  ~/.vimrc
-"	      for Amiga:  s:.vimrc
-"  for MS-DOS and Win32:  $VIM\_vimrc
-"	    for OpenVMS:  sys$login:.vimrc
+"Matthew's vimrc
 
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish
-endif
-
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
-
-" allow backspacing over everything in insert mode
-set backspace=indent,eol,start
-
-"if has("vms")
-"  set nobackup		" do not keep a backup file, use versions instead
-"else
-"  set backup		" keep a backup file
-"endif
-set nobackup
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
-
-" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-" let &guioptions = substitute(&guioptions, "t", "", "g")
-
-" Don't use Ex mode, use Q for formatting
+au BufWinEnter * silent loadview 
+au BufWinLeave * mkview 
+call pathogen#infect()
 map Q gq
+set autoindent
+set backspace=indent,eol,start
+set expandtab
+set history=50
+set incsearch
+set laststatus=2
+set mouse=a
+set nobackup
+set nocompatible
+set ruler
+set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
+set shiftwidth=4
+set showcmd
+set showmode
+set spell
+set statusline+=\ [%{&ff}/%Y]            " filetype
+set statusline+=\ [%{getcwd()}]          " current dir
+set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+set statusline=%<%f\                     " Filename
+set statusline+=%{fugitive#statusline()} "  Git Hotness
+set statusline+=%w%h%m%r                 " Options
+set tabpagemax=15
+set tabstop=4
+set tw=80
+syntax on
 
-"My maps
-vnoremap <C-l> <End>
-vnoremap <C-h> <Home>
-onoremap <C-l> <End>
-onoremap <C-h> <Home>
-nnoremap <C-l> <End>
-nnoremap <C-h> <Home>
-nnoremap <C-h> 0
-nnoremap <C-i> i
-inoremap <C-l> <End>
 inoremap <C-h> <Home>
-"inoremap <C-j> <down>
-"inoremap <C-k> <up>
-"inoremap <C-n> <left>
-"inoremap <C-m> <right>
-"inoremap <C-i> <Esc>
-"inoremap <Leader><Return> <Return>
-"inoremap <Leader><Tab> <Tab>
-inoremap <C-x> <Delete>
-"End my maps
-
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
-" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-l> <End>
 inoremap <C-U> <C-G>u<C-U>
+inoremap <C-x> <Delete>
+nnoremap <C-h> 0
+nnoremap <C-h> <Home>
+nnoremap <C-i> i
+nnoremap <C-j> :tabprevious<CR>
+nnoremap <C-k> :tabnext<CR>
+nnoremap <C-l> <End>
+nnoremap j jzz
+nnoremap k kzz
+nnoremap <silent> <C-m> :execute 'silent! tabmove ' . tabpagenr()<CR>
+nnoremap <silent> <C-n> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
+onoremap <C-h> <Home>
+onoremap <C-l> <End>
+vnoremap <C-h> <Home>
+vnoremap <C-l> <End>
 
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  " set hlsearch
-endif
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
-
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
-
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
-  "
-  "Commented out by Matt
-  "autocmd BufReadPost *
-  "   if line("'\"") > 1 && line("'\"") <= line("$") |
-  "  \   exe "normal! g`\"" |
-  "  \ endif
-
-  augroup END
-
-else
-
-  set autoindent		" always set autoindenting on
-
-endif " has("autocmd")
+"-----------------------------------------------------------------------------"
+"Others
+"-----------------------------------------------------------------------------"
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
@@ -118,13 +60,3 @@ if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 		  \ | wincmd p | diffthis
 endif
-
-set tabstop=4
-set expandtab
-set shiftwidth=4
-set tw=80
-
-call pathogen#infect()
-
-au BufWinLeave * mkview 
-au BufWinEnter * silent loadview 
